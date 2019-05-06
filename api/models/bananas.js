@@ -12,12 +12,12 @@ class BananaStand {
             } else {
                 this.db.run('CREATE TABLE IF NOT EXISTS stand( \
                         id INTEGER PRIMARY KEY, \
-                        dt REAL, \
-                        qty INT, \
-                        orig_qty INT, \
-                        trans TEXT, \
-                        created_at REAL, \
-                        updated_at REAL \
+                        dt REAL NOT NULL, \
+                        qty INT NOT NULL, \
+                        orig_qty INT NOT NULL, \
+                        trans TEXT NOT NULL, \
+                        created_at REAL NOT NULL, \
+                        updated_at REAL NOT NULL \
                     );', (err) => {
                     if (err) {
                         console.error(err);
@@ -46,13 +46,15 @@ class BananaStand {
             VALUES(julianday(?),?,?,\'BUY\',julianday(\'now\'),julianday(\'now\'));',[date,qty,qty],(err) => {
                 if (err) {
                     console.error(err);
-                    throw err;
+                    reject(err);
+                    return;
                 }
                 console.log(`purchased ${qty} bananas on ${date}`);      
                 resolve();          
             });
         }
         catch (err) {
+            console.error(err);
             reject(err);
         }
     }
@@ -66,7 +68,9 @@ class BananaStand {
             this.db.get('SELECT COUNT(*) as cnt FROM stand \
                 WHERE trans=\'BUY\' AND qty > 0 AND julianday(?) - dt BETWEEN 0 AND 10;',[date], (err, row) => {
                 if (err) {
-                    throw err;
+                    console.error(err);
+                    reject(err);
+                    return;
                 }
                 let count = row.cnt;
                 let i = 0;
@@ -82,7 +86,9 @@ class BananaStand {
                 this.db.each('SELECT id, dt, qty, date(dt) AS pretty_dt FROM stand \
                     WHERE trans=\'BUY\' AND qty > 0 AND julianday(?) - dt BETWEEN 0 AND 10 ORDER BY dt ASC;',[date], (err, row) => {
                     if (err) {
-                        throw err;
+                        console.error(err);
+                        reject(err);
+                        return;
                     }
                     if (row && (working.num > 0)) {
                         let inventory = row.qty;
@@ -104,7 +110,14 @@ class BananaStand {
                         let sold = row.qty - inventory;
                         console.log(`sold ${sold} bananas on ${row.pretty_dt}`); 
                         if ((working.num == 0) || (++i == count)) { // done
-                            resolve(this.sold(qty, date, working));
+                            try {
+                                resolve(this.sold(qty, date, working));
+                            }
+                            catch (err) {                                
+                                console.error(err);
+                                reject(err);
+                                return;
+                            }
                         }   
                     }            
                 });
@@ -169,7 +182,9 @@ class BananaStand {
                 FROM stand \
                 WHERE dt <= julianday(?);', [end, end, end], (err, row) => {
                     if (err) {
-                        throw err;
+                        console.error(err);
+                        reject(err);
+                        return;
                     }
                     // get the answers
                     data = row;
@@ -188,7 +203,9 @@ class BananaStand {
         try {
             this.db.all('SELECT id, date(dt) as date, qty, orig_qty, trans, date(created_at)||\' \'||time(created_at) as created, date(updated_at)||\' \'||time(updated_at) as modified from stand;', (err, rows) => {
                     if (err) {
-                        throw err;
+                        console.error(err);
+                        reject(err);
+                        return;
                     }
                     console.log(`${rows.length} rows dumped`);
                     resolve(rows);
