@@ -27,6 +27,8 @@ For **buy**, the return data indicates success or produces and error.
   "status":"success"
 }
 ```
+To test `curl --data 'date=2019-05-05&qty=10' http://localhost:3000/api/buy`
+
 For **sell**, the returned data additionally indicates the number of bananas actually sold based on inventory and includes a message to that effect.
 ```
 {
@@ -35,6 +37,7 @@ For **sell**, the returned data additionally indicates the number of bananas act
   "message": "sale incomplete: 10 of 30"
 }
 ```
+To test `curl --data 'date=2019-05-05&qty=30' http://localhost:3000/api/sell`
 
 **status** is a GET operation that requires the _date_ 
 ```
