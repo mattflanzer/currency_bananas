@@ -21,7 +21,7 @@ PORT=49158 npm start
 The API has four RESTful functions: *buy*, *sell*, *status*, and *dump*. All functions return JSON data.
 
 **buy** and **sell** are POST operations that require two data points: _date_ and _qty_, the transacation date and quantity of bananas respectively. 
-For **buy**, the return data indicates success or produces and error. 
+For **buy**, the return data indicates success or produces an error. 
 ```
 {
   "status":"success"
