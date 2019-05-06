@@ -62,3 +62,6 @@ typings/
 
 # VS Code
 .vscode
+
+# keep the db blank in GIT
+api/db/bananas.db
