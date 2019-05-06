@@ -10,6 +10,7 @@ git clone https://github.com/mattflanzer/currency_bananas.git matts_bananas
 and then start the server
 ```
 cd matts_bananas
+npm install
 npm start
 ```
 
