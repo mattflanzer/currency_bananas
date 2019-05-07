@@ -10,11 +10,10 @@ export function buy(req, res) {
     setImmediate(() => {
         // buy bananas
         bananaStand.purchase(qty,dt, () => {
-            res.json({ 'status': 'success' });
+            res.status(200).json({ 'status': 'success' });
 
         }, (err) => {
-            res.status(400);
-            res.send(err);
+            res.status(400).send(err);
         });
     });
 }
@@ -28,7 +27,8 @@ export function sell(req, res) {
         // sell bananas
         bananaStand.sell(qty,dt, (sold) => {
             let message = (qty == sold) ? 'sale complete' : `sale incomplete: ${sold} of ${qty}`;
-            res.json({ 'status': 'success', 'qty': sold, 'message': message });
+            let status = (sold == 0) ? 'failure' : 'success';
+            res.status(200).json({ 'status': status, 'qty': sold, 'message': message });
         }, (err) => {
             res.status(400);
             res.send(err);
@@ -45,7 +45,7 @@ export function status(req, res) {
         // get banana stand metrics
         bananaStand.metrics(dt, (data) => {
             data.status = 'success';
-            res.json(data);
+            res.status(200).json(data);
         }, (err) => {
             res.status(400);
             res.send(err);
@@ -59,7 +59,7 @@ export function dump(req, res) {
     setImmediate(() => {
         // get banana stand metrics
         bananaStand.dump((rows) => {
-            res.json(rows);
+            res.status(200).json(rows);
         }, (err) => {
             res.status(400);
             res.send(err);

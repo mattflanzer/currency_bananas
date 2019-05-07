@@ -2,11 +2,12 @@ import sqlite3 from 'sqlite3';
 
 const sql = sqlite3.verbose();
 
-
-
-class BananaStand {
+export class BananaStand {
     constructor() {
-        this.db = new sql.Database('api/db/bananas.db' , sql.OPEN_READWRITE | sql.CREATE, (err) => {
+        this.open();
+    }
+    open(dbFile = 'api/db/bananas.db'  ) {   
+        this.db = new sql.Database(dbFile, sql.OPEN_READWRITE | sql.CREATE, (err) => {
             if (err) {
                 console.error(err);
             } else {
@@ -23,7 +24,7 @@ class BananaStand {
                         console.error(err);
                     }
                 });
-                console.log('connected to bananas db');
+                console.log(`connected to bananas db: ${dbFile}`);
             }
         });
     }
@@ -40,6 +41,7 @@ class BananaStand {
     purchase(qty, date, resolve, reject) {
         if (qty <= 0) {
             reject('bad quantity');
+            return;
         }
         try {
             this.db.run('INSERT INTO stand(dt,qty,orig_qty,trans,created_at,updated_at) \
@@ -62,6 +64,7 @@ class BananaStand {
     sell(qty, date, resolve, reject) {
         if (qty <= 0) {
             reject('bad quantity');
+            return;
         }
         try {
             // count rows first
