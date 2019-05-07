@@ -57,4 +57,12 @@ http://localhost:3000/api/status/2019-05-05
 
 **dump** is a GET operation with no paramters. It simply dumps out the current transaction record.
 
+## Tests
+I've implemented a small suite of Mocha/Chai tests that may be executed with
+```
+npm test
+```
+
+These tests validate the basic API and test a few basic buy+sell scenarios including undersales due to inventory or expired bananas.
+
 
